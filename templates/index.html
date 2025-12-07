@@ -3,64 +3,82 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Used Car Price Predictor</title>
+    <title>Multi-Model Car Price Predictor</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        /* Animasi Custom */
         .fade-in { animation: fadeIn 0.5s ease-in; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans">
 
-    <nav class="bg-indigo-600 text-white shadow-lg">
+    <nav class="bg-indigo-800 text-white shadow-lg sticky top-0 z-50">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wider">AutoEstimate AI</h1>
-            <div class="space-x-4 text-sm font-medium">
+            <h1 class="text-xl md:text-2xl font-bold tracking-wider flex items-center gap-2">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"></path></svg>
+                AutoEstimate AI (Dual Model)
+            </h1>
+            <div class="hidden md:flex space-x-4 text-sm font-medium">
                 <a href="#predictor" class="hover:text-indigo-200 transition">Prediksi</a>
-                <a href="#insights" class="hover:text-indigo-200 transition">Insight Data</a>
-                <a href="#about" class="hover:text-indigo-200 transition">Tentang Model</a>
+                <a href="#insights" class="hover:text-indigo-200 transition">Insight</a>
+                <a href="#about" class="hover:text-indigo-200 transition">Tentang</a>
             </div>
         </div>
     </nav>
 
-    <header class="bg-indigo-700 text-white py-16 text-center">
-        <h2 class="text-4xl font-extrabold mb-4">Prediksi Harga Mobil Bekas Akurat</h2>
-        <p class="text-lg text-indigo-100 max-w-2xl mx-auto">
-            Gunakan kekuatan Machine Learning (Random Forest) untuk mengetahui estimasi harga pasar mobil Anda berdasarkan data historis Amerika Serikat.
+    <header class="bg-indigo-700 text-white py-12 text-center">
+        <h2 class="text-3xl md:text-4xl font-extrabold mb-4">Komparasi Prediksi Harga Mobil</h2>
+        <p class="text-indigo-100 max-w-2xl mx-auto px-4">
+            Pilih antara <strong>Random Forest</strong> (Klasik) atau <strong>HistGradientBoosting</strong> (Modern) untuk melihat estimasi harga berdasarkan 850k+ data.
         </p>
     </header>
 
-    <main class="container mx-auto px-6 -mt-10 mb-20 relative z-10">
+    <main class="container mx-auto px-4 md:px-6 -mt-8 mb-20 relative z-10">
         
-        <section id="predictor" class="bg-white rounded-xl shadow-xl p-8 mb-12 fade-in">
-            <div class="flex flex-col md:flex-row gap-8">
-                <div class="w-full md:w-2/3">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Masukkan Detail Mobil</h3>
-                    <form id="predictForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section id="predictor" class="bg-white rounded-xl shadow-xl p-6 md:p-8 mb-12 fade-in ring-1 ring-gray-100">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <div class="w-full lg:w-2/3">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Parameter Mobil</h3>
+                    <form id="predictForm" class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Tahun Pembuatan</label>
-                            <input type="number" id="year" required min="1990" max="2025" placeholder="Contoh: 2017"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        <div class="md:col-span-2 bg-indigo-50 p-4 rounded-lg border border-indigo-100">
+                            <label class="block text-sm font-bold text-indigo-900 mb-2">Pilih Algoritma AI:</label>
+                            <div class="flex gap-4">
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="model_type" value="rf" checked class="form-radio text-indigo-600 h-5 w-5">
+                                    <span class="text-gray-700 font-medium">Random Forest</span>
+                                </label>
+                                <label class="flex items-center space-x-2 cursor-pointer">
+                                    <input type="radio" name="model_type" value="gb" class="form-radio text-green-600 h-5 w-5">
+                                    <span class="text-gray-700 font-medium">HistGradientBoosting (Recommended)</span>
+                                </label>
+                            </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Jarak Tempuh (Miles)</label>
-                            <input type="number" id="mileage" required min="0" placeholder="Contoh: 50000"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Tahun Pembuatan</label>
+                            <input type="number" id="year" required 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Loading...">
+                            <p class="text-xs text-gray-500 mt-1" id="year-hint">Range: ...</p>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Merek (Make)</label>
-                            <select id="make" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Jarak Tempuh (Miles)</label>
+                            <input type="number" id="mileage" required 
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none" placeholder="Loading...">
+                            <p class="text-xs text-gray-500 mt-1" id="mileage-hint">Max: ...</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Merek (Make)</label>
+                            <select id="make" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
                                 <option value="" disabled selected>Loading...</option>
                             </select>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Negara Bagian (State)</label>
-                            <select id="state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                            <label class="block text-sm font-semibold text-gray-600 mb-1">Negara Bagian (State)</label>
+                            <select id="state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 bg-white">
                                 <option value="" disabled selected>Loading...</option>
                             </select>
                         </div>
@@ -74,59 +92,60 @@
                     </form>
                 </div>
 
-                <div class="w-full md:w-1/3 bg-indigo-50 rounded-lg p-6 flex flex-col justify-center items-center text-center border-2 border-indigo-100">
-                    <h4 class="text-gray-500 font-semibold mb-2 uppercase text-sm tracking-wide">Estimasi Harga</h4>
-                    <div id="resultValue" class="text-5xl font-extrabold text-indigo-600 mb-2">
-                        $0
-                    </div>
-                    <p class="text-xs text-gray-400">Akurasi MAE: ± $5,665</p>
-                    <div id="loading" class="hidden mt-4">
-                        <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <div class="w-full lg:w-1/3 bg-gray-50 rounded-xl p-6 flex flex-col justify-center items-center text-center border-2 border-dashed border-gray-200">
+                    <h4 class="text-gray-500 font-semibold mb-2 uppercase text-sm tracking-wide">Hasil Prediksi</h4>
+                    
+                    <div id="loading" class="hidden my-6">
+                        <svg class="animate-spin h-10 w-10 text-indigo-600 mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                             <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
                             <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
                         </svg>
+                        <p class="text-xs text-indigo-600 mt-2">Computing...</p>
+                    </div>
+
+                    <div id="resultContainer">
+                        <div id="resultValue" class="text-4xl md:text-5xl font-extrabold text-indigo-600 mb-2">
+                            $0
+                        </div>
+                        <p class="text-xs text-gray-400 mb-4">Estimasi Pasar USD</p>
+                        <span id="modelUsedBadge" class="bg-gray-200 text-gray-700 px-3 py-1 rounded-full text-xs font-bold">
+                            Model: -
+                        </span>
                     </div>
                 </div>
             </div>
         </section>
 
         <section id="insights" class="mb-12">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <span class="bg-indigo-600 w-2 h-8 mr-3 rounded"></span>
-                Analisis Data (EDA)
-            </h3>
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 border-l-4 border-indigo-600 pl-3">Analisis Data (EDA)</h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="bg-white p-4 rounded-xl shadow-md">
-                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Faktor Pengaruh Harga</h4>
+                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Feature Importance (RF Only)</h4>
                     <img src="/static/feature_importance.png" alt="Feature Importance" class="w-full rounded-lg hover:opacity-90 transition">
                 </div>
                 <div class="bg-white p-4 rounded-xl shadow-md">
-                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Korelasi Feature</h4>
+                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Sebaran Data (Sample)</h4>
                     <img src="/static/eda_scatters.png" alt="Scatter Plots" class="w-full rounded-lg hover:opacity-90 transition">
                 </div>
             </div>
         </section>
 
-        <section id="about" class="bg-gray-800 text-gray-300 rounded-xl p-8">
-            <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+        <section id="about" class="bg-slate-800 text-slate-300 rounded-xl p-8">
+            <h3 class="text-xl font-bold text-white mb-4">Tentang Project Ini</h3>
+            <div class="grid md:grid-cols-2 gap-8">
                 <div>
-                    <h3 class="text-xl font-bold text-white mb-4">Tentang Model Ini</h3>
-                    <p class="mb-2">Aplikasi ini dibangun menggunakan dataset 850k+ listing mobil bekas.</p>
-                    <ul class="list-disc ml-5 space-y-1 text-sm">
-                        <li>Algorithm: Random Forest Regressor</li>
-                        <li>Preprocessing: Outlier Removal, Label Encoding</li>
-                        <li>Tech Stack: Python, Flask, Tailwind CSS</li>
+                    <p class="mb-2 text-sm">Aplikasi ini membandingkan dua pendekatan Machine Learning:</p>
+                    <ul class="list-disc ml-5 space-y-1 text-sm text-slate-400">
+                        <li><strong>Random Forest:</strong> Bagus untuk data kecil-menengah, mudah diinterpretasi (feature importance), tapi lambat pada data besar.</li>
+                        <li><strong>HistGradientBoosting:</strong> Lebih cepat dan efisien memori, sangat akurat untuk dataset besar (>100k baris).</li>
                     </ul>
                 </div>
-                <div class="bg-gray-700 p-4 rounded-lg min-w-[250px]">
-                    <h4 class="text-white font-semibold mb-3 border-b border-gray-600 pb-2">Statistik Performa</h4>
-                    <div class="flex justify-between mb-2">
-                        <span>R² Score:</span>
-                        <span class="text-green-400 font-bold">60.52%</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>MAE:</span>
-                        <span class="text-yellow-400 font-bold">$5,665</span>
+                <div class="bg-slate-700 p-4 rounded-lg text-sm">
+                    <h4 class="text-white font-semibold mb-2">Dataset Info</h4>
+                    <div class="grid grid-cols-2 gap-y-1">
+                        <span>Total Data:</span> <span class="text-white">852,122</span>
+                        <span>Year Range:</span> <span class="text-white">1997 - 2018</span>
+                        <span>Price Range:</span> <span class="text-white">$1,500 - $499,500</span>
                     </div>
                 </div>
             </div>
@@ -134,41 +153,43 @@
 
     </main>
 
-    <footer class="bg-gray-900 text-gray-500 py-6 text-center text-sm">
+    <footer class="bg-slate-900 text-slate-500 py-6 text-center text-sm">
         <p>&copy; 2025 Rakha Taufiqurrahman Faisal Aziz (123230071). All rights reserved.</p>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Fetch Options untuk Dropdown
-            fetch('/api/options')
-                .then(response => response.json())
-                .then(data => {
-                    const makeSelect = document.getElementById('make');
-                    const stateSelect = document.getElementById('state');
-                    
-                    // Clear loading option
-                    makeSelect.innerHTML = '<option value="" disabled selected>Pilih Merek</option>';
-                    stateSelect.innerHTML = '<option value="" disabled selected>Pilih State</option>';
+            // 1. Fetch Config & Options
+            Promise.all([
+                fetch('/api/config').then(res => res.json()),
+                fetch('/api/options').then(res => res.json())
+            ]).then(([config, options]) => {
+                
+                // Set Range Inputs
+                const yearInput = document.getElementById('year');
+                yearInput.min = config.year_min;
+                yearInput.max = config.year_max;
+                yearInput.placeholder = `Contoh: ${config.year_max}`;
+                document.getElementById('year-hint').textContent = `Range: ${config.year_min} - ${config.year_max}`;
 
-                    // Populate Makes
-                    data.makes.forEach(make => {
-                        const option = document.createElement('option');
-                        option.value = make;
-                        option.textContent = make;
-                        makeSelect.appendChild(option);
-                    });
+                const mileageInput = document.getElementById('mileage');
+                mileageInput.min = config.mileage_min;
+                mileageInput.max = config.mileage_max;
+                mileageInput.placeholder = `Contoh: 50000`;
+                document.getElementById('mileage-hint').textContent = `Max: ${parseInt(config.mileage_max).toLocaleString()}`;
 
-                    // Populate States
-                    data.states.forEach(state => {
-                        const option = document.createElement('option');
-                        option.value = state;
-                        option.textContent = state;
-                        stateSelect.appendChild(option);
-                    });
-                });
+                // Populate Selects
+                const makeSelect = document.getElementById('make');
+                const stateSelect = document.getElementById('state');
+                
+                makeSelect.innerHTML = '<option value="" disabled selected>Pilih Merek</option>';
+                options.makes.forEach(m => makeSelect.add(new Option(m, m)));
 
-            // 2. Handle Form Submit
+                stateSelect.innerHTML = '<option value="" disabled selected>Pilih State</option>';
+                options.states.forEach(s => stateSelect.add(new Option(s, s)));
+            });
+
+            // 2. Handle Submit
             document.getElementById('predictForm').addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -176,37 +197,43 @@
                 const mileage = document.getElementById('mileage').value;
                 const make = document.getElementById('make').value;
                 const state = document.getElementById('state').value;
+                const modelType = document.querySelector('input[name="model_type"]:checked').value;
                 
                 const resultDiv = document.getElementById('resultValue');
+                const badgeDiv = document.getElementById('modelUsedBadge');
                 const loadingDiv = document.getElementById('loading');
+                const resultContainer = document.getElementById('resultContainer');
 
-                if(!make || !state) {
-                    alert("Mohon lengkapi semua data!");
-                    return;
-                }
+                if(!make || !state) { alert("Lengkapi data!"); return; }
 
-                // UI Loading State
-                resultDiv.classList.add('hidden');
+                // Loading State
+                resultContainer.classList.add('opacity-30');
                 loadingDiv.classList.remove('hidden');
 
                 fetch('/api/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ year, mileage, make, state })
+                    body: JSON.stringify({ year, mileage, make, state, model_type: modelType })
                 })
                 .then(response => response.json())
                 .then(data => {
                     loadingDiv.classList.add('hidden');
-                    resultDiv.classList.remove('hidden');
+                    resultContainer.classList.remove('opacity-30');
                     
-                    // Update Harga dengan animasi sederhana
                     resultDiv.textContent = data.formatted;
+                    badgeDiv.textContent = `Model: ${data.used_model}`;
+                    
+                    // Style badge color based on model
+                    if(modelType === 'rf') {
+                        badgeDiv.className = "bg-indigo-100 text-indigo-800 px-3 py-1 rounded-full text-xs font-bold";
+                    } else {
+                        badgeDiv.className = "bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs font-bold";
+                    }
                 })
                 .catch(err => {
                     loadingDiv.classList.add('hidden');
-                    resultDiv.classList.remove('hidden');
+                    resultContainer.classList.remove('opacity-30');
                     resultDiv.textContent = "Error";
-                    console.error(err);
                 });
             });
         });
