@@ -3,10 +3,8 @@ from model import CarPricePredictor
 
 app = Flask(__name__)
 
-# Inisialisasi
 predictor = CarPricePredictor()
 try:
-    # Proses ini mungkin memakan waktu 10-20 detik karena melatih 2 model
     predictor.load_and_train('true_car_listings.csv')
 except Exception as e:
     print(f"Error loading model: {e}")
@@ -17,7 +15,6 @@ def index():
 
 @app.route('/api/config', methods=['GET'])
 def get_config():
-    """Kirim batas min/max ke UI"""
     return jsonify(predictor.limits)
 
 @app.route('/api/options', methods=['GET'])
@@ -30,22 +27,28 @@ def get_options():
 @app.route('/api/predict', methods=['POST'])
 def predict():
     data = request.json
+    model_type = data.get('model_type', 'hgb')
     
-    # Ambil tipe model dari request, default ke 'rf' jika kosong
-    model_selected = data.get('model_type', 'rf') 
-    
+    # Mapping nama model untuk ditampilkan di UI
+    model_names = {
+        'ridge': 'Ridge Regression (Linear)',
+        'dt': 'Decision Tree Regressor',
+        'rf': 'Random Forest Regressor',
+        'hgb': 'HistGradientBoosting (Best)'
+    }
+
     price = predictor.predict(
         data.get('year'),
         data.get('mileage'),
         data.get('make'),
         data.get('state'),
-        model_type=model_selected
+        model_type
     )
     
     return jsonify({
         'price': round(price, 2),
         'formatted': f"${price:,.2f}",
-        'used_model': 'Random Forest' if model_selected == 'rf' else 'HistGradientBoosting'
+        'model_used': model_names.get(model_type, 'Unknown Model')
     })
 
 if __name__ == '__main__':

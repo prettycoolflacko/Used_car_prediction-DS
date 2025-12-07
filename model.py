@@ -1,25 +1,27 @@
 import os
-# SOLUSI ERROR WINDOWS: Set jumlah core manual agar tidak mencari 'wmic'
+# SOLUSI ERROR WINDOWS: Set jumlah core manual (misal 4) agar ringan & tidak error
 os.environ['LOKY_MAX_CPU_COUNT'] = '4'
 
 import pandas as pd
 import numpy as np
 import matplotlib
-matplotlib.use('Agg') # Agar tidak error saat generate plot di server tanpa GUI
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestRegressor, HistGradientBoostingRegressor
+from sklearn.linear_model import Ridge
+from sklearn.tree import DecisionTreeRegressor
 from sklearn.preprocessing import LabelEncoder
 
 class CarPricePredictor:
     def __init__(self):
-        self.models = {} # Dictionary untuk menyimpan dua model
+        self.models = {} 
         self.le_make = LabelEncoder()
         self.le_state = LabelEncoder()
         self.unique_makes = []
         self.unique_states = []
         
-        # Batas data untuk UI (Validation)
+        # Batas data (Validation)
         self.limits = {
             'year_min': 1997, 'year_max': 2018,
             'mileage_min': 5, 'mileage_max': 2856196,
@@ -30,14 +32,14 @@ class CarPricePredictor:
             os.makedirs('static')
 
     def load_and_train(self, data_path='true_car_listings.csv'):
-        print("--- Memulai Proses Loading Data ---")
+        print("--- Memulai Loading Data ---")
         try:
             df = pd.read_csv(data_path)
         except FileNotFoundError:
             print("File CSV tidak ditemukan.")
             return
 
-        # 1. Strict Cleaning sesuai Range
+        # 1. Cleaning & Filtering
         df = df.drop_duplicates().dropna()
         df = df[
             (df['Year'] >= self.limits['year_min']) & 
@@ -48,13 +50,12 @@ class CarPricePredictor:
             (df['Price'] <= self.limits['price_max'])
         ]
 
-        # Membersihkan nama model yang aneh
         problematic = (df['Model'].str.contains('\*', na=False, regex=False) | 
                        (df['Model'].str.len() <= 2) | 
                        df['Model'].str.match(r'^\d+$', na=False))
         df = df[~problematic]
 
-        print(f"Data bersih: {len(df)} baris. Memulai Training...")
+        print(f"Data Training: {len(df)} baris.")
 
         # 2. Feature Engineering
         df['Car_Age'] = 2025 - df['Year']
@@ -67,84 +68,80 @@ class CarPricePredictor:
         X = df[['Car_Age', 'Mileage', 'Make_Encoded', 'State_Encoded']]
         y = df['Price']
         
-        # 3. Training Model A: Random Forest (Original)
-        # n_jobs=-1 diganti jadi n_jobs=4 agar lebih aman di Windows
-        print("-> Melatih Random Forest (Model A)...")
-        rf_model = RandomForestRegressor(n_estimators=100, max_depth=10, random_state=42, n_jobs=4)
-        rf_model.fit(X, y)
-        self.models['rf'] = rf_model
+        # --- TRAINING 4 MODEL (Diurutkan dari yang tercepat) ---
         
-        # 4. Training Model B: HistGradientBoosting (Recommended)
-        print("-> Melatih HistGradientBoosting (Model B)...")
-        hgb_model = HistGradientBoostingRegressor(
-            max_iter=200, max_depth=None, learning_rate=0.1, random_state=42, early_stopping=True
+        # 1. Ridge Regression (Linear - Sangat Cepat)
+        print("[1/4] Training Ridge Regression (Baseline)...")
+        self.models['ridge'] = Ridge(alpha=1.0)
+        self.models['ridge'].fit(X, y)
+
+        # 2. Decision Tree (Cepat, Single Tree)
+        print("[2/4] Training Decision Tree (Simple)...")
+        self.models['dt'] = DecisionTreeRegressor(max_depth=15, random_state=42)
+        self.models['dt'].fit(X, y)
+
+        # 3. HistGradientBoosting (Modern, Efisien untuk Data Besar)
+        print("[3/4] Training HistGradientBoosting (Recommended)...")
+        self.models['hgb'] = HistGradientBoostingRegressor(
+            max_iter=150, max_depth=None, learning_rate=0.1, random_state=42, early_stopping=True
         )
-        hgb_model.fit(X, y)
-        self.models['hgb'] = hgb_model
+        self.models['hgb'].fit(X, y)
+
+        # 4. Random Forest (Berat, dikurangi estimators jadi 50 agar laptop aman)
+        print("[4/4] Training Random Forest (Heavy)...")
+        self.models['rf'] = RandomForestRegressor(
+            n_estimators=50, # Dikurangi dari 100 agar hemat RAM/CPU
+            max_depth=10, 
+            random_state=42, 
+            n_jobs=4 # Menggunakan 4 thread
+        )
+        self.models['rf'].fit(X, y)
         
         print("--- Semua Model Selesai Dilatih ---")
-        self._generate_plots(df, rf_model)
+        self._generate_plots(df, self.models['rf'])
 
     def _generate_plots(self, df, rf_model):
-        # Plot 1: Feature Importance (Khusus RF)
+        # Plot Feature Importance (Ambil dari RF)
         plt.figure(figsize=(10, 6))
         features = ['Car_Age', 'Mileage', 'Make', 'State']
         importances = rf_model.feature_importances_
-        
-        # PERBAIKAN SEABORN WARNING DISINI (tambah hue dan legend=False)
         sns.barplot(x=importances, y=features, hue=features, palette='viridis', legend=False)
-        
         plt.title('Feature Importance (Random Forest)')
-        plt.xlabel('Importance')
         plt.tight_layout()
         plt.savefig('static/feature_importance.png')
         plt.close()
 
-        # Plot 2: Scatter (Sampled)
+        # Plot Scatter
         sample = df.sample(min(2000, len(df)), random_state=42)
         plt.figure(figsize=(12, 5))
-        
         plt.subplot(1, 2, 1)
         sns.scatterplot(x='Car_Age', y='Price', data=sample, alpha=0.5, color='#4F46E5')
-        plt.title('Usia Mobil vs Harga')
-        plt.xlabel('Usia (Tahun)')
-        plt.ylabel('Harga ($)')
-        
+        plt.title('Usia vs Harga')
         plt.subplot(1, 2, 2)
         sns.scatterplot(x='Mileage', y='Price', data=sample, alpha=0.5, color='#10B981')
         plt.title('Jarak Tempuh vs Harga')
-        plt.xlabel('Mileage')
-        
         plt.tight_layout()
         plt.savefig('static/eda_scatters.png')
         plt.close()
 
     def predict(self, year, mileage, make, state, model_type='hgb'):
-        # Pilih model berdasarkan input user
-        model = self.models.get(model_type)
-        if not model:
-            print(f"Model {model_type} tidak ditemukan, menggunakan default (HGB).")
-            model = self.models.get('hgb')
-            
+        model = self.models.get(model_type, self.models.get('hgb'))
+        
         try:
             year = int(year)
             mileage = float(mileage)
             
-            # Clip input agar aman
-            if year < self.limits['year_min']: year = self.limits['year_min']
-            if year > self.limits['year_max']: year = self.limits['year_max']
-            
+            # Clip
+            year = max(self.limits['year_min'], min(year, self.limits['year_max']))
             car_age = 2025 - year
             
-            # Handle unknown labels
+            # Encode
             make_enc = self.le_make.transform([make])[0] if make in self.le_make.classes_ else self.le_make.transform([self.le_make.classes_[0]])[0]
             state_enc = self.le_state.transform([state])[0] if state in self.le_state.classes_ else self.le_state.transform([self.le_state.classes_[0]])[0]
             
-            features = np.array([[car_age, mileage, make_enc, state_enc]])
-            prediction = model.predict(features)[0]
-            
+            prediction = model.predict([[car_age, mileage, make_enc, state_enc]])[0]
             return max(self.limits['price_min'], min(prediction, self.limits['price_max']))
             
         except Exception as e:
-            print(f"Error Prediction: {e}")
+            print(f"Error: {e}")
             return 0
