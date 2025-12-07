@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Used Car Price Predictor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Animasi Custom */
+        .fade-in { animation: fadeIn 0.5s ease-in; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans">
+
+    <nav class="bg-indigo-600 text-white shadow-lg">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold tracking-wider">AutoEstimate AI</h1>
+            <div class="space-x-4 text-sm font-medium">
+                <a href="#predictor" class="hover:text-indigo-200 transition">Prediksi</a>
+                <a href="#insights" class="hover:text-indigo-200 transition">Insight Data</a>
+                <a href="#about" class="hover:text-indigo-200 transition">Tentang Model</a>
+            </div>
+        </div>
+    </nav>
+
+    <header class="bg-indigo-700 text-white py-16 text-center">
+        <h2 class="text-4xl font-extrabold mb-4">Prediksi Harga Mobil Bekas Akurat</h2>
+        <p class="text-lg text-indigo-100 max-w-2xl mx-auto">
+            Gunakan kekuatan Machine Learning (Random Forest) untuk mengetahui estimasi harga pasar mobil Anda berdasarkan data historis Amerika Serikat.
+        </p>
+    </header>
+
+    <main class="container mx-auto px-6 -mt-10 mb-20 relative z-10">
+        
+        <section id="predictor" class="bg-white rounded-xl shadow-xl p-8 mb-12 fade-in">
+            <div class="flex flex-col md:flex-row gap-8">
+                <div class="w-full md:w-2/3">
+                    <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Masukkan Detail Mobil</h3>
+                    <form id="predictForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Tahun Pembuatan</label>
+                            <input type="number" id="year" required min="1990" max="2025" placeholder="Contoh: 2017"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Jarak Tempuh (Miles)</label>
+                            <input type="number" id="mileage" required min="0" placeholder="Contoh: 50000"
+                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Merek (Make)</label>
+                            <select id="make" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <option value="" disabled selected>Loading...</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-semibold text-gray-600 mb-2">Negara Bagian (State)</label>
+                            <select id="state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
+                                <option value="" disabled selected>Loading...</option>
+                            </select>
+                        </div>
+
+                        <div class="md:col-span-2 mt-4">
+                            <button type="submit" 
+                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-[1.01]">
+                                Hitung Estimasi Harga
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <div class="w-full md:w-1/3 bg-indigo-50 rounded-lg p-6 flex flex-col justify-center items-center text-center border-2 border-indigo-100">
+                    <h4 class="text-gray-500 font-semibold mb-2 uppercase text-sm tracking-wide">Estimasi Harga</h4>
+                    <div id="resultValue" class="text-5xl font-extrabold text-indigo-600 mb-2">
+                        $0
+                    </div>
+                    <p class="text-xs text-gray-400">Akurasi MAE: ± $5,665</p>
+                    <div id="loading" class="hidden mt-4">
+                        <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="insights" class="mb-12">
+            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
+                <span class="bg-indigo-600 w-2 h-8 mr-3 rounded"></span>
+                Analisis Data (EDA)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white p-4 rounded-xl shadow-md">
+                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Faktor Pengaruh Harga</h4>
+                    <img src="/static/feature_importance.png" alt="Feature Importance" class="w-full rounded-lg hover:opacity-90 transition">
+                </div>
+                <div class="bg-white p-4 rounded-xl shadow-md">
+                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Korelasi Feature</h4>
+                    <img src="/static/eda_scatters.png" alt="Scatter Plots" class="w-full rounded-lg hover:opacity-90 transition">
+                </div>
+            </div>
+        </section>
+
+        <section id="about" class="bg-gray-800 text-gray-300 rounded-xl p-8">
+            <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Tentang Model Ini</h3>
+                    <p class="mb-2">Aplikasi ini dibangun menggunakan dataset 850k+ listing mobil bekas.</p>
+                    <ul class="list-disc ml-5 space-y-1 text-sm">
+                        <li>Algorithm: Random Forest Regressor</li>
+                        <li>Preprocessing: Outlier Removal, Label Encoding</li>
+                        <li>Tech Stack: Python, Flask, Tailwind CSS</li>
+                    </ul>
+                </div>
+                <div class="bg-gray-700 p-4 rounded-lg min-w-[250px]">
+                    <h4 class="text-white font-semibold mb-3 border-b border-gray-600 pb-2">Statistik Performa</h4>
+                    <div class="flex justify-between mb-2">
+                        <span>R² Score:</span>
+                        <span class="text-green-400 font-bold">60.52%</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span>MAE:</span>
+                        <span class="text-yellow-400 font-bold">$5,665</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="bg-gray-900 text-gray-500 py-6 text-center text-sm">
+        <p>&copy; 2025 Rakha Taufiqurrahman Faisal Aziz (123230071). All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // 1. Fetch Options untuk Dropdown
+            fetch('/api/options')
+                .then(response => response.json())
+                .then(data => {
+                    const makeSelect = document.getElementById('make');
+                    const stateSelect = document.getElementById('state');
+                    
+                    // Clear loading option
+                    makeSelect.innerHTML = '<option value="" disabled selected>Pilih Merek</option>';
+                    stateSelect.innerHTML = '<option value="" disabled selected>Pilih State</option>';
+
+                    // Populate Makes
+                    data.makes.forEach(make => {
+                        const option = document.createElement('option');
+                        option.value = make;
+                        option.textContent = make;
+                        makeSelect.appendChild(option);
+                    });
+
+                    // Populate States
+                    data.states.forEach(state => {
+                        const option = document.createElement('option');
+                        option.value = state;
+                        option.textContent = state;
+                        stateSelect.appendChild(option);
+                    });
+                });
+
+            // 2. Handle Form Submit
+            document.getElementById('predictForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const year = document.getElementById('year').value;
+                const mileage = document.getElementById('mileage').value;
+                const make = document.getElementById('make').value;
+                const state = document.getElementById('state').value;
+                
+                const resultDiv = document.getElementById('resultValue');
+                const loadingDiv = document.getElementById('loading');
+
+                if(!make || !state) {
+                    alert("Mohon lengkapi semua data!");
+                    return;
+                }
+
+                // UI Loading State
+                resultDiv.classList.add('hidden');
+                loadingDiv.classList.remove('hidden');
+
+                fetch('/api/predict', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ year, mileage, make, state })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    loadingDiv.classList.add('hidden');
+                    resultDiv.classList.remove('hidden');
+                    
+                    // Update Harga dengan animasi sederhana
+                    resultDiv.textContent = data.formatted;
+                })
+                .catch(err => {
+                    loadingDiv.classList.add('hidden');
+                    resultDiv.classList.remove('hidden');
+                    resultDiv.textContent = "Error";
+                    console.error(err);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
