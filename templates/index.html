@@ -3,130 +3,303 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Used Car Price Predictor</title>
+    <title>AutoEstimate AI - Premium Price Predictor</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        /* Animasi Custom */
-        .fade-in { animation: fadeIn 0.5s ease-in; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        body { font-family: 'Poppins', sans-serif; }
+        
+        /* Custom Animations */
+        .slide-up { animation: slideUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; opacity: 0; transform: translateY(20px); }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+        
+        @keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+        
+        /* Gradient Text */
+        .text-gradient { background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        
+        /* Hide Scrollbar for cleaner look */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+        /* Custom Radio Styling */
+        .model-card { transition: all 0.3s ease; }
+        input:checked + .model-card {
+            border-color: #6366f1;
+            background-color: #eef2ff;
+            box-shadow: 0 10px 15px -3px rgba(99, 102, 241, 0.2);
+            transform: translateY(-2px);
+        }
+        input:checked + .model-card .check-icon { opacity: 1; transform: scale(1); }
     </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans">
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-100 selection:text-indigo-800 relative overflow-x-hidden">
 
-    <nav class="bg-indigo-600 text-white shadow-lg">
+    <div class="fixed top-0 left-0 w-full h-full overflow-hidden -z-10 pointer-events-none">
+        <div class="absolute top-[-10%] left-[-10%] w-96 h-96 bg-purple-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob"></div>
+        <div class="absolute top-[-10%] right-[-10%] w-96 h-96 bg-indigo-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-2000"></div>
+        <div class="absolute bottom-[-20%] left-[20%] w-96 h-96 bg-blue-200 rounded-full mix-blend-multiply filter blur-3xl opacity-30 animate-blob animation-delay-4000"></div>
+    </div>
+
+    <nav class="backdrop-blur-md bg-white/70 sticky top-0 z-50 border-b border-slate-200/60">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold tracking-wider">AutoEstimate AI</h1>
-            <div class="space-x-4 text-sm font-medium">
-                <a href="#predictor" class="hover:text-indigo-200 transition">Prediksi</a>
-                <a href="#insights" class="hover:text-indigo-200 transition">Insight Data</a>
-                <a href="#about" class="hover:text-indigo-200 transition">Tentang Model</a>
+            <h1 class="text-xl md:text-2xl font-bold tracking-tight flex items-center gap-2 text-slate-800">
+                <div class="bg-indigo-600 text-white p-1.5 rounded-lg shadow-lg shadow-indigo-500/30">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <span>AutoEstimate<span class="text-indigo-600">AI</span></span>
+            </h1>
+            <div class="hidden md:flex space-x-6 text-sm font-medium text-slate-600">
+                <a href="#predictor" class="hover:text-indigo-600 transition duration-300">Prediksi</a>
+                <a href="#insights" class="hover:text-indigo-600 transition duration-300">Insight</a>
+                <a href="#about" class="hover:text-indigo-600 transition duration-300">Tentang</a>
             </div>
         </div>
     </nav>
 
-    <header class="bg-indigo-700 text-white py-16 text-center">
-        <h2 class="text-4xl font-extrabold mb-4">Prediksi Harga Mobil Bekas Akurat</h2>
-        <p class="text-lg text-indigo-100 max-w-2xl mx-auto">
-            Gunakan kekuatan Machine Learning (Random Forest) untuk mengetahui estimasi harga pasar mobil Anda berdasarkan data historis Amerika Serikat.
-        </p>
+    <header class="pt-20 pb-16 text-center relative px-4">
+        <div class="slide-up">
+            <span class="inline-block py-1 px-3 rounded-full bg-indigo-50 text-indigo-600 text-xs font-bold tracking-wider mb-4 border border-indigo-100 uppercase">AI Powered Valuation v3.0</span>
+            <h2 class="text-4xl md:text-6xl font-extrabold mb-6 text-slate-900 tracking-tight leading-tight">
+                Estimasi Harga Mobil <br>
+                <span class="text-gradient">Lebih Akurat & Cerdas</span>
+            </h2>
+            <p class="text-slate-500 max-w-2xl mx-auto text-lg leading-relaxed">
+                Platform komparasi machine learning canggih menggunakan algoritma 
+                <span class="font-semibold text-slate-700">Gradient Boosting</span> dan <span class="font-semibold text-slate-700">Random Forest</span> 
+                untuk memprediksi nilai pasar kendaraan bekas.
+            </p>
+        </div>
     </header>
 
-    <main class="container mx-auto px-6 -mt-10 mb-20 relative z-10">
+    <main class="container mx-auto px-4 md:px-6 mb-20 relative z-10">
         
-        <section id="predictor" class="bg-white rounded-xl shadow-xl p-8 mb-12 fade-in">
-            <div class="flex flex-col md:flex-row gap-8">
-                <div class="w-full md:w-2/3">
-                    <h3 class="text-2xl font-bold text-gray-800 mb-6 border-b pb-2">Masukkan Detail Mobil</h3>
-                    <form id="predictForm" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <section id="predictor" class="bg-white/80 backdrop-blur-xl rounded-3xl shadow-2xl shadow-slate-200/50 p-6 md:p-10 mb-16 slide-up delay-100 border border-white/50 ring-1 ring-slate-100">
+            <div class="flex flex-col xl:flex-row gap-10">
+                
+                <div class="w-full xl:w-2/3">
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-100 pb-4">
+                        <h3 class="text-2xl font-bold text-slate-800">Konfigurasi Model</h3>
+                        <span class="text-xs text-slate-400 font-medium bg-slate-50 px-2 py-1 rounded border border-slate-100">Parameter Input</span>
+                    </div>
+                    
+                    <form id="predictForm" class="space-y-8">
                         
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Tahun Pembuatan</label>
-                            <input type="number" id="year" required min="1990" max="2025" placeholder="Contoh: 2017"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                            <label class="block text-sm font-bold text-slate-700 mb-4 uppercase tracking-wide">1. Pilih Algoritma Cerdas</label>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="model_type" value="ridge" class="peer sr-only">
+                                    <div class="model-card h-full p-4 rounded-2xl border-2 border-slate-100 bg-white hover:border-indigo-200 relative overflow-hidden">
+                                        <div class="absolute top-2 right-2 opacity-0 check-icon transition-all duration-300 text-indigo-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                                        </div>
+                                        <div class="font-bold text-sm text-slate-700">Ridge</div>
+                                        <div class="text-[11px] text-slate-400 mt-1 leading-tight">Linear Regression dasar. Cepat namun sederhana.</div>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="model_type" value="dt" class="peer sr-only">
+                                    <div class="model-card h-full p-4 rounded-2xl border-2 border-slate-100 bg-white hover:border-yellow-200 relative overflow-hidden">
+                                        <div class="absolute top-2 right-2 opacity-0 check-icon transition-all duration-300 text-yellow-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-yellow-50 text-yellow-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.131A8 8 0 008 8m0 0V4a2 2 0 112 2h-2z"></path></svg>
+                                        </div>
+                                        <div class="font-bold text-sm text-slate-700">Decision Tree</div>
+                                        <div class="text-[11px] text-slate-400 mt-1 leading-tight">Pola pohon tunggal. Logis tapi rawan bias.</div>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="model_type" value="rf" class="peer sr-only">
+                                    <div class="model-card h-full p-4 rounded-2xl border-2 border-slate-100 bg-white hover:border-purple-200 relative overflow-hidden">
+                                        <div class="absolute top-2 right-2 opacity-0 check-icon transition-all duration-300 text-purple-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                                        </div>
+                                        <div class="font-bold text-sm text-slate-700">Random Forest</div>
+                                        <div class="text-[11px] text-slate-400 mt-1 leading-tight">Ensemble Trees. Stabil dan sangat akurat.</div>
+                                    </div>
+                                </label>
+
+                                <label class="cursor-pointer group relative">
+                                    <input type="radio" name="model_type" value="hgb" checked class="peer sr-only">
+                                    <div class="model-card h-full p-4 rounded-2xl border-2 border-slate-100 bg-white hover:border-emerald-200 relative overflow-hidden">
+                                        <div class="absolute top-0 right-0 bg-emerald-500 text-white text-[9px] px-2 py-0.5 rounded-bl-lg font-bold">REKOMENDASI</div>
+                                        <div class="absolute top-3 right-2 opacity-0 check-icon transition-all duration-300 text-emerald-600">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        </div>
+                                        <div class="w-10 h-10 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                                        </div>
+                                        <div class="font-bold text-sm text-slate-700">HistGradient</div>
+                                        <div class="text-[11px] text-slate-400 mt-1 leading-tight">State-of-the-art. Performa terbaik data besar.</div>
+                                    </div>
+                                </label>
+                            </div>
                         </div>
 
                         <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Jarak Tempuh (Miles)</label>
-                            <input type="number" id="mileage" required min="0" placeholder="Contoh: 50000"
-                                class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none transition">
+                            <label class="block text-sm font-bold text-slate-700 mb-4 uppercase tracking-wide">2. Detail Kendaraan</label>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div class="relative group">
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1 ml-1 group-focus-within:text-indigo-600 transition-colors">Tahun Pembuatan</label>
+                                    <input type="number" id="year" required 
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all outline-none" placeholder="...">
+                                    <p class="text-[10px] text-slate-400 mt-1 absolute right-1 top-1" id="year-hint"></p>
+                                </div>
+
+                                <div class="relative group">
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1 ml-1 group-focus-within:text-indigo-600 transition-colors">Jarak Tempuh (Miles)</label>
+                                    <input type="number" id="mileage" required 
+                                        class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all outline-none" placeholder="...">
+                                    <p class="text-[10px] text-slate-400 mt-1 absolute right-1 top-1" id="mileage-hint"></p>
+                                </div>
+
+                                <div class="relative group">
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1 ml-1 group-focus-within:text-indigo-600 transition-colors">Merek (Make)</label>
+                                    <div class="relative">
+                                        <select id="make" class="appearance-none w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all outline-none text-slate-700">
+                                            <option value="" disabled selected>Loading...</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="relative group">
+                                    <label class="block text-xs font-semibold text-slate-500 mb-1 ml-1 group-focus-within:text-indigo-600 transition-colors">Lokasi (State)</label>
+                                    <div class="relative">
+                                        <select id="state" class="appearance-none w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-indigo-500/50 focus:border-indigo-500 focus:bg-white transition-all outline-none text-slate-700">
+                                            <option value="" disabled selected>Loading...</option>
+                                        </select>
+                                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-500">
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
 
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Merek (Make)</label>
-                            <select id="make" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                <option value="" disabled selected>Loading...</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-semibold text-gray-600 mb-2">Negara Bagian (State)</label>
-                            <select id="state" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none bg-white">
-                                <option value="" disabled selected>Loading...</option>
-                            </select>
-                        </div>
-
-                        <div class="md:col-span-2 mt-4">
-                            <button type="submit" 
-                                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3 rounded-lg shadow-md transition transform hover:scale-[1.01]">
-                                Hitung Estimasi Harga
-                            </button>
-                        </div>
+                        <button type="submit" 
+                            class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-700 hover:to-violet-700 text-white font-bold py-4 rounded-xl shadow-lg shadow-indigo-500/30 transition-all transform hover:scale-[1.01] active:scale-[0.99] flex justify-center items-center gap-2 group">
+                            <span>Hitung Estimasi Harga</span>
+                            <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+                        </button>
                     </form>
                 </div>
 
-                <div class="w-full md:w-1/3 bg-indigo-50 rounded-lg p-6 flex flex-col justify-center items-center text-center border-2 border-indigo-100">
-                    <h4 class="text-gray-500 font-semibold mb-2 uppercase text-sm tracking-wide">Estimasi Harga</h4>
-                    <div id="resultValue" class="text-5xl font-extrabold text-indigo-600 mb-2">
-                        $0
-                    </div>
-                    <p class="text-xs text-gray-400">Akurasi MAE: ± $5,665</p>
-                    <div id="loading" class="hidden mt-4">
-                        <svg class="animate-spin h-8 w-8 text-indigo-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
-                        </svg>
+                <div class="w-full xl:w-1/3">
+                    <div class="h-full bg-slate-900 rounded-2xl p-8 relative overflow-hidden flex flex-col justify-center items-center text-center text-white shadow-inner">
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-indigo-500 rounded-full mix-blend-overlay filter blur-3xl opacity-20"></div>
+                        
+                        <h4 class="text-indigo-200 font-semibold mb-6 uppercase text-xs tracking-[0.2em]">Hasil Prediksi AI</h4>
+                        
+                        <div id="loading" class="hidden my-8">
+                            <div class="relative w-16 h-16 mx-auto">
+                                <div class="absolute inset-0 border-4 border-indigo-500/30 rounded-full"></div>
+                                <div class="absolute inset-0 border-4 border-indigo-400 rounded-full border-t-transparent animate-spin"></div>
+                            </div>
+                            <p class="text-xs text-indigo-300 mt-4 animate-pulse">Sedang mengkalkulasi...</p>
+                        </div>
+
+                        <div id="resultContainer" class="relative z-10 transition-all duration-500">
+                            <div class="mb-2 flex items-baseline justify-center gap-1">
+                                <span id="resultValue" class="text-5xl md:text-6xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-white to-indigo-200 tracking-tight">
+                                    $0
+                                </span>
+                            </div>
+                            <p class="text-sm text-slate-400 mb-8 border-t border-slate-700/50 pt-4 w-48 mx-auto">Estimasi Nilai Pasar (USD)</p>
+                            
+                            <div id="modelUsedBadge" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300">
+                                <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                                Menunggu Input
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section id="insights" class="mb-12">
-            <h3 class="text-2xl font-bold text-gray-800 mb-6 flex items-center">
-                <span class="bg-indigo-600 w-2 h-8 mr-3 rounded"></span>
-                Analisis Data (EDA)
+        <section id="insights" class="mb-16 slide-up delay-200">
+            <h3 class="text-2xl font-bold text-slate-800 mb-6 flex items-center gap-3">
+                <span class="w-1 h-8 bg-indigo-600 rounded-full"></span>
+                Analisis Visual (EDA)
             </h3>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div class="bg-white p-4 rounded-xl shadow-md">
-                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Faktor Pengaruh Harga</h4>
-                    <img src="/static/feature_importance.png" alt="Feature Importance" class="w-full rounded-lg hover:opacity-90 transition">
+                <div class="group bg-white p-5 rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl transition border border-slate-100">
+                    <h4 class="font-semibold text-slate-700 mb-4 text-center text-sm uppercase tracking-wide">Feature Importance</h4>
+                    <div class="bg-slate-50 rounded-xl overflow-hidden p-2">
+                        <img src="/static/feature_importance.png" alt="Feature Importance" class="w-full object-contain h-64 mix-blend-multiply group-hover:scale-105 transition duration-500">
+                    </div>
                 </div>
-                <div class="bg-white p-4 rounded-xl shadow-md">
-                    <h4 class="font-semibold text-gray-700 mb-3 text-center">Korelasi Feature</h4>
-                    <img src="/static/eda_scatters.png" alt="Scatter Plots" class="w-full rounded-lg hover:opacity-90 transition">
+                <div class="group bg-white p-5 rounded-2xl shadow-lg shadow-slate-200/50 hover:shadow-xl transition border border-slate-100">
+                    <h4 class="font-semibold text-slate-700 mb-4 text-center text-sm uppercase tracking-wide">Distribusi Data</h4>
+                    <div class="bg-slate-50 rounded-xl overflow-hidden p-2">
+                        <img src="/static/eda_scatters.png" alt="Scatter Plots" class="w-full object-contain h-64 mix-blend-multiply group-hover:scale-105 transition duration-500">
+                    </div>
                 </div>
             </div>
         </section>
 
-        <section id="about" class="bg-gray-800 text-gray-300 rounded-xl p-8">
-            <div class="flex flex-col md:flex-row justify-between items-start gap-8">
+        <section id="about" class="bg-slate-900 text-white rounded-3xl p-8 md:p-12 slide-up delay-300 relative overflow-hidden">
+            <div class="absolute top-0 right-0 w-96 h-96 bg-indigo-600 rounded-full mix-blend-overlay filter blur-[100px] opacity-20"></div>
+            
+            <div class="relative z-10 grid md:grid-cols-2 gap-12 items-center">
                 <div>
-                    <h3 class="text-xl font-bold text-white mb-4">Tentang Model Ini</h3>
-                    <p class="mb-2">Aplikasi ini dibangun menggunakan dataset 850k+ listing mobil bekas.</p>
-                    <ul class="list-disc ml-5 space-y-1 text-sm">
-                        <li>Algorithm: Random Forest Regressor</li>
-                        <li>Preprocessing: Outlier Removal, Label Encoding</li>
-                        <li>Tech Stack: Python, Flask, Tailwind CSS</li>
+                    <h3 class="text-2xl font-bold mb-6 text-white">Tentang Project Ini</h3>
+                    <p class="mb-4 text-slate-300 leading-relaxed">
+                        Aplikasi ini dirancang sebagai studi komparatif performa algoritma Machine Learning dalam kasus regresi harga. Kami membandingkan efisiensi model klasik versus modern.
+                    </p>
+                    <ul class="space-y-3 text-sm text-slate-400 mt-6">
+                        <li class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-indigo-400 font-bold text-xs">1</span>
+                            <span><strong>Ridge:</strong> Baseline linear sederhana.</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-yellow-400 font-bold text-xs">2</span>
+                            <span><strong>Decision Tree:</strong> Logika eksplisit, mudah diinterpretasi.</span>
+                        </li>
+                        <li class="flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-slate-800 flex items-center justify-center text-emerald-400 font-bold text-xs">3</span>
+                            <span><strong>HistGradientBoosting:</strong> Akurasi tertinggi pada dataset besar.</span>
+                        </li>
                     </ul>
                 </div>
-                <div class="bg-gray-700 p-4 rounded-lg min-w-[250px]">
-                    <h4 class="text-white font-semibold mb-3 border-b border-gray-600 pb-2">Statistik Performa</h4>
-                    <div class="flex justify-between mb-2">
-                        <span>R² Score:</span>
-                        <span class="text-green-400 font-bold">60.52%</span>
-                    </div>
-                    <div class="flex justify-between">
-                        <span>MAE:</span>
-                        <span class="text-yellow-400 font-bold">$5,665</span>
+                <div>
+                    <div class="bg-slate-800/50 backdrop-blur border border-slate-700 p-6 rounded-2xl">
+                        <h4 class="text-indigo-300 font-bold mb-4 uppercase text-xs tracking-widest">Dataset Statistics</h4>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="p-4 bg-slate-800 rounded-xl">
+                                <div class="text-2xl font-bold text-white">852k+</div>
+                                <div class="text-xs text-slate-500 mt-1">Total Data Point</div>
+                            </div>
+                            <div class="p-4 bg-slate-800 rounded-xl">
+                                <div class="text-2xl font-bold text-white">20+</div>
+                                <div class="text-xs text-slate-500 mt-1">Tahun Rentang Data</div>
+                            </div>
+                            <div class="p-4 bg-slate-800 rounded-xl col-span-2">
+                                <div class="flex justify-between items-end">
+                                    <div>
+                                        <div class="text-xl font-bold text-white">$1.5k - $500k</div>
+                                        <div class="text-xs text-slate-500 mt-1">Rentang Harga</div>
+                                    </div>
+                                    <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -134,39 +307,63 @@
 
     </main>
 
-    <footer class="bg-gray-900 text-gray-500 py-6 text-center text-sm">
-        <p>&copy; 2025 Rakha Taufiqurrahman Faisal Aziz (123230071). All rights reserved.</p>
+    <footer class="bg-white border-t border-slate-200 py-12 mt-12 relative z-10">
+        <div class="container mx-auto px-6">
+            <div class="flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="text-center md:text-left">
+                    <p class="font-bold text-slate-800">DatSci MR.White</p>
+                    <p class="text-sm text-slate-500">NIM: 071, 216, 126</p>
+                    <p class="text-xs text-slate-400 mt-2">&copy; 2025 AutoEstimate AI. All rights reserved.</p>
+                </div>
+
+                <div class="flex flex-col items-center md:items-end">
+                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-widest mb-3">Contributors</p>
+                    <div class="flex space-x-4">
+                        <a href="https://github.com/prettycoolflacko" target="_blank" class="group flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-full border border-slate-200 transition-colors">
+                            <svg class="w-4 h-4 text-slate-600 group-hover:text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            <span class="text-sm text-slate-600 font-medium">prettycoolflacko</span>
+                        </a>
+                        <a href="https://github.com/asda1-max" target="_blank" class="group flex items-center space-x-2 bg-slate-50 hover:bg-slate-100 px-4 py-2 rounded-full border border-slate-200 transition-colors">
+                            <svg class="w-4 h-4 text-slate-600 group-hover:text-black" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/></svg>
+                            <span class="text-sm text-slate-600 font-medium">asda1-max</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
     </footer>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            // 1. Fetch Options untuk Dropdown
-            fetch('/api/options')
-                .then(response => response.json())
-                .then(data => {
-                    const makeSelect = document.getElementById('make');
-                    const stateSelect = document.getElementById('state');
-                    
-                    // Clear loading option
-                    makeSelect.innerHTML = '<option value="" disabled selected>Pilih Merek</option>';
-                    stateSelect.innerHTML = '<option value="" disabled selected>Pilih State</option>';
+            // 1. Fetch Config & Options from Backend
+            Promise.all([
+                fetch('/api/config').then(res => res.json()),
+                fetch('/api/options').then(res => res.json())
+            ]).then(([config, options]) => {
+                
+                // Set Range Inputs
+                const yearInput = document.getElementById('year');
+                yearInput.min = config.year_min;
+                yearInput.max = config.year_max;
+                yearInput.placeholder = `Contoh: ${config.year_max}`;
+                document.getElementById('year-hint').textContent = `Range: ${config.year_min} - ${config.year_max}`;
 
-                    // Populate Makes
-                    data.makes.forEach(make => {
-                        const option = document.createElement('option');
-                        option.value = make;
-                        option.textContent = make;
-                        makeSelect.appendChild(option);
-                    });
+                const mileageInput = document.getElementById('mileage');
+                mileageInput.min = config.mileage_min;
+                mileageInput.max = config.mileage_max;
+                mileageInput.placeholder = `Contoh: 50000`;
+                document.getElementById('mileage-hint').textContent = `Max: ${parseInt(config.mileage_max).toLocaleString()}`;
 
-                    // Populate States
-                    data.states.forEach(state => {
-                        const option = document.createElement('option');
-                        option.value = state;
-                        option.textContent = state;
-                        stateSelect.appendChild(option);
-                    });
-                });
+                // Populate Selects
+                const makeSelect = document.getElementById('make');
+                const stateSelect = document.getElementById('state');
+                
+                makeSelect.innerHTML = '<option value="" disabled selected>Pilih Merek</option>';
+                options.makes.forEach(m => makeSelect.add(new Option(m, m)));
+
+                stateSelect.innerHTML = '<option value="" disabled selected>Pilih State</option>';
+                options.states.forEach(s => stateSelect.add(new Option(s, s)));
+            });
 
             // 2. Handle Form Submit
             document.getElementById('predictForm').addEventListener('submit', function(e) {
@@ -176,37 +373,48 @@
                 const mileage = document.getElementById('mileage').value;
                 const make = document.getElementById('make').value;
                 const state = document.getElementById('state').value;
+                const modelType = document.querySelector('input[name="model_type"]:checked').value;
                 
                 const resultDiv = document.getElementById('resultValue');
+                const badgeDiv = document.getElementById('modelUsedBadge');
                 const loadingDiv = document.getElementById('loading');
+                const resultContainer = document.getElementById('resultContainer');
 
-                if(!make || !state) {
-                    alert("Mohon lengkapi semua data!");
-                    return;
-                }
+                if(!make || !state) { alert("Harap lengkapi semua data!"); return; }
 
-                // UI Loading State
-                resultDiv.classList.add('hidden');
+                // Loading State Animation
+                resultContainer.classList.add('blur-sm', 'opacity-50');
                 loadingDiv.classList.remove('hidden');
 
                 fetch('/api/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ year, mileage, make, state })
+                    body: JSON.stringify({ year, mileage, make, state, model_type: modelType })
                 })
                 .then(response => response.json())
                 .then(data => {
                     loadingDiv.classList.add('hidden');
-                    resultDiv.classList.remove('hidden');
+                    resultContainer.classList.remove('blur-sm', 'opacity-50');
                     
-                    // Update Harga dengan animasi sederhana
+                    // Update UI with Data
                     resultDiv.textContent = data.formatted;
+                    
+                    // Style badge color based on selected model
+                    let badgeColorClass = "w-2 h-2 rounded-full mr-2 ";
+                    let badgeText = `Model: ${data.model_used}`;
+                    
+                    if(modelType === 'rf') badgeColorClass += "bg-purple-500";
+                    else if(modelType === 'hgb') badgeColorClass += "bg-emerald-500";
+                    else if(modelType === 'dt') badgeColorClass += "bg-yellow-500";
+                    else badgeColorClass += "bg-indigo-500";
+
+                    badgeDiv.innerHTML = `<div class="${badgeColorClass}"></div> ${badgeText}`;
                 })
                 .catch(err => {
-                    loadingDiv.classList.add('hidden');
-                    resultDiv.classList.remove('hidden');
-                    resultDiv.textContent = "Error";
                     console.error(err);
+                    loadingDiv.classList.add('hidden');
+                    resultContainer.classList.remove('blur-sm', 'opacity-50');
+                    resultDiv.textContent = "Error";
                 });
             });
         });
